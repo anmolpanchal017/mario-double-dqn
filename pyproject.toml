@@ -7,7 +7,7 @@ name = "mario-double-dqn"
 version = "0.1.0"
 description = "Resume-ready Double DQN agent for Super Mario Bros reinforcement learning."
 readme = "README.md"
-requires-python = ">=3.10,<3.12"
+requires-python = ">=3.10,<3.13"
 authors = [{ name = "Anmol Panchal" }]
 dependencies = [
     "numpy>=1.24,<2.0",
