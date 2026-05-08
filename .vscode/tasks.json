@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install project",
+      "type": "shell",
+      "command": ".\\.venv\\Scripts\\python.exe -m pip install -e \".[dev]\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run smoke training",
+      "type": "shell",
+      "command": ".\\.venv\\Scripts\\mario-dqn.exe train --config configs\\smoke.toml",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run tests",
+      "type": "shell",
+      "command": ".\\.venv\\Scripts\\python.exe -m pytest -q",
+      "problemMatcher": []
+    },
+    {
+      "label": "CLI help",
+      "type": "shell",
+      "command": "$env:PYTHONPATH='src'; py -m mario_dqn.cli --help",
+      "problemMatcher": []
+    }
+  ]
+}
+

@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Mario DQN: smoke train",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "mario_dqn.cli",
+      "args": ["train", "--config", "configs/smoke.toml"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}\\src"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}
+

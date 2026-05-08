@@ -1,0 +1,12 @@
+numpy<2.0,>=1.24
+pillow>=10.0
+matplotlib>=3.8
+torch>=2.1
+torchvision>=0.16
+gym==0.25.2
+gym-super-mario-bros==7.4.0
+nes-py==8.2.1
+
+[dev]
+pytest>=8.0
+ruff>=0.5

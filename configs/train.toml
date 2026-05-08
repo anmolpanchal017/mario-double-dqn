@@ -1,0 +1,32 @@
+[run]
+name = "mario-double-dqn"
+seed = 42
+episodes = 40000
+max_steps_per_episode = 0
+save_dir = "runs/train"
+checkpoint_every = 20
+record_every = 20
+render = false
+
+[env]
+world = "SuperMarioBros-1-1-v0"
+movement = "simple"
+frame_stack = 4
+skip_frames = 4
+resize = 84
+grayscale = true
+
+[agent]
+batch_size = 32
+memory_size = 100000
+gamma = 0.9
+learning_rate = 0.00025
+burnin = 10000
+learn_every = 3
+sync_every = 10000
+save_every = 500000
+exploration_rate = 1.0
+exploration_rate_decay = 0.99999975
+exploration_rate_min = 0.1
+device = "auto"
+

@@ -1,0 +1,131 @@
+Metadata-Version: 2.4
+Name: mario-double-dqn
+Version: 0.1.0
+Summary: Resume-ready Double DQN agent for Super Mario Bros reinforcement learning.
+Author: Anmol Panchal
+Requires-Python: <3.12,>=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy<2.0,>=1.24
+Requires-Dist: pillow>=10.0
+Requires-Dist: matplotlib>=3.8
+Requires-Dist: torch>=2.1
+Requires-Dist: torchvision>=0.16
+Requires-Dist: gym==0.25.2
+Requires-Dist: gym-super-mario-bros==7.4.0
+Requires-Dist: nes-py==8.2.1
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: ruff>=0.5; extra == "dev"
+
+# Mario Double DQN
+
+A resume-ready reinforcement learning project that trains an AI agent to play
+Super Mario Bros with a Double Deep Q-Network. The implementation follows the
+spirit of the official PyTorch Mario RL tutorial while organizing the code like
+a real project: CLI commands, configs, checkpoints, metric logs, plots, tests,
+and a clear write-up.
+
+> Assignment goal: implement an AI-powered Mario agent using Double Deep
+> Q-Networks that can play the game by itself.
+
+## Highlights
+
+- Double DQN agent with online and target convolutional Q-networks.
+- Experience replay buffer for stable off-policy learning.
+- Atari-style preprocessing: frame skipping, grayscale resize, and frame stack.
+- Config-driven training for quick CPU smoke runs or longer GPU/Colab runs.
+- CSV metric logging, checkpoint saving, evaluation, and plot regeneration.
+- Lightweight tests for the core project pieces.
+
+## Environment
+
+The Mario emulator stack is older and is most reliable on Python 3.10 or 3.11.
+This repo intentionally declares `>=3.10,<3.12`. If your system only has Python
+3.13, install Python 3.11 first, then create the environment with that version.
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+```
+
+## Usage
+
+Run a short CPU-friendly smoke training job:
+
+```powershell
+mario-dqn train --config configs/smoke.toml
+```
+
+Run the full training configuration:
+
+```powershell
+mario-dqn train --config configs/train.toml
+```
+
+Evaluate a saved checkpoint:
+
+```powershell
+mario-dqn eval --config configs/smoke.toml --checkpoint runs/smoke/<run-id>/checkpoints/latest.pt
+```
+
+Regenerate metric plots from a run directory:
+
+```powershell
+mario-dqn plot --run-dir runs/smoke/<run-id>
+```
+
+Run tests:
+
+```powershell
+pytest
+```
+
+## How Double DQN Works
+
+Classic DQN learns an action-value function `Q(s, a)` that estimates the future
+return from taking an action in a state. It can overestimate action values
+because the same network both chooses and evaluates the best next action.
+
+Double DQN reduces that bias by splitting the work:
+
+- the online network selects the best next action;
+- the target network evaluates that action;
+- the target network is synced from the online network periodically.
+
+The agent also uses epsilon-greedy exploration: early training is mostly random,
+then it gradually shifts toward the best actions predicted by the network.
+
+## Project Structure
+
+```text
+src/mario_dqn/
+  agent.py       Double DQN agent, action selection, learning, checkpoints
+  cli.py         train/eval/plot command-line interface
+  config.py      typed TOML config loading
+  env.py         Super Mario environment factory and wrappers
+  logging.py     CSV metrics and checkpoint directory management
+  model.py       convolutional Q-network
+  plots.py       reward/loss/Q-value chart generation
+  replay.py      experience replay buffer
+  train.py       training loop
+  evaluate.py    evaluation loop
+```
+
+## Resume Bullets
+
+- Built a Double DQN reinforcement learning agent in PyTorch to play Super Mario
+  Bros using frame-stacked visual observations and experience replay.
+- Engineered a reusable RL training pipeline with config files, checkpoints,
+  metric logging, evaluation, and plot generation.
+- Implemented CPU-friendly smoke tests and documented a reproducible setup for
+  older Gym/NES emulator dependencies.
+
+## Results Policy
+
+This project should only claim strong gameplay performance after a real long
+training run has produced checkpoint metrics or a demo video. The smoke config
+exists to verify the pipeline quickly; it is not expected to train a good Mario
+agent.
+

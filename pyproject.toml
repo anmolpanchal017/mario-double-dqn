@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mario-double-dqn"
+version = "0.1.0"
+description = "Resume-ready Double DQN agent for Super Mario Bros reinforcement learning."
+readme = "README.md"
+requires-python = ">=3.10,<3.12"
+authors = [{ name = "Anmol Panchal" }]
+dependencies = [
+    "numpy>=1.24,<2.0",
+    "pillow>=10.0",
+    "matplotlib>=3.8",
+    "torch>=2.1",
+    "torchvision>=0.16",
+    "gym==0.25.2",
+    "gym-super-mario-bros==7.4.0",
+    "nes-py==8.2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+mario-dqn = "mario_dqn.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+

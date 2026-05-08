@@ -1,0 +1,32 @@
+[run]
+name = "smoke"
+seed = 42
+episodes = 2
+max_steps_per_episode = 250
+save_dir = "runs/smoke"
+checkpoint_every = 1
+record_every = 1
+render = false
+
+[env]
+world = "SuperMarioBros-1-1-v0"
+movement = "simple"
+frame_stack = 4
+skip_frames = 4
+resize = 84
+grayscale = true
+
+[agent]
+batch_size = 16
+memory_size = 2000
+gamma = 0.9
+learning_rate = 0.00025
+burnin = 32
+learn_every = 4
+sync_every = 100
+save_every = 1000
+exploration_rate = 1.0
+exploration_rate_decay = 0.99995
+exploration_rate_min = 0.1
+device = "auto"
+
