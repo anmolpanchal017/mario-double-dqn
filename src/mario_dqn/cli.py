@@ -11,6 +11,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     train_parser = subparsers.add_parser("train", help="Train the Double DQN agent.")
     train_parser.add_argument("--config", default="configs/smoke.toml", help="Path to a TOML config.")
+    train_parser.add_argument(
+        "--resume-checkpoint",
+        default=None,
+        help="Resume training from an existing checkpoint, usually checkpoints/latest.pt.",
+    )
 
     eval_parser = subparsers.add_parser("eval", help="Evaluate a checkpoint.")
     eval_parser.add_argument("--config", default="configs/smoke.toml", help="Path to a TOML config.")
@@ -39,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
         config = load_config(args.config)
         from .train import train
 
-        run_dir = train(config, args.config)
+        run_dir = train(config, args.config, args.resume_checkpoint)
         print(f"Training complete. Run directory: {run_dir}")
         return 0
 

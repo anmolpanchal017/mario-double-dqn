@@ -83,9 +83,21 @@ def create_run_dir(base_dir: str | Path, run_name: str) -> Path:
     return run_dir
 
 
+def last_logged_episode(run_dir: str | Path) -> int:
+    metrics_path = Path(run_dir) / "metrics.csv"
+    if not metrics_path.exists():
+        return -1
+
+    with metrics_path.open("r", newline="", encoding="utf-8") as file:
+        rows = list(csv.DictReader(file))
+
+    if not rows:
+        return -1
+    return int(rows[-1]["episode"])
+
+
 def _mean(values) -> float:
     values = list(values)
     if not values:
         return 0.0
     return float(sum(values) / len(values))
-

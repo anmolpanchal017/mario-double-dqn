@@ -6,13 +6,26 @@ import shutil
 from .agent import MarioAgent
 from .config import ProjectConfig
 from .env import make_env, seed_everything
-from .logging import MetricLogger, create_run_dir
+from .logging import MetricLogger, create_run_dir, last_logged_episode
 
 
-def train(config: ProjectConfig, config_path: str | Path | None = None) -> Path:
+def train(
+    config: ProjectConfig,
+    config_path: str | Path | None = None,
+    resume_checkpoint: str | Path | None = None,
+) -> Path:
     seed_everything(config.run.seed)
-    run_dir = create_run_dir(config.run.save_dir, config.run.name)
-    if config_path is not None:
+    if resume_checkpoint is None:
+        run_dir = create_run_dir(config.run.save_dir, config.run.name)
+        start_episode = 0
+    else:
+        resume_checkpoint = Path(resume_checkpoint)
+        run_dir = resume_checkpoint.parent.parent
+        start_episode = last_logged_episode(run_dir) + 1
+        print(f"Resuming from {resume_checkpoint}")
+        print(f"Continuing run directory: {run_dir}")
+
+    if config_path is not None and not (run_dir / "config.toml").exists():
         shutil.copy2(config_path, run_dir / "config.toml")
 
     env = make_env(config.env)
@@ -20,9 +33,11 @@ def train(config: ProjectConfig, config_path: str | Path | None = None) -> Path:
     state_dim = env.observation_space
     action_dim = env.action_space.n
     agent = MarioAgent(state_dim, action_dim, config.agent, run_dir)
+    if resume_checkpoint is not None:
+        agent.load(resume_checkpoint)
 
     try:
-        for episode in range(config.run.episodes):
+        for episode in range(start_episode, start_episode + config.run.episodes):
             state = env.reset()
             steps = 0
             while True:
@@ -58,8 +73,10 @@ def train(config: ProjectConfig, config_path: str | Path | None = None) -> Path:
                 agent.save(f"episode-{episode:06d}.pt")
 
         agent.save("latest.pt")
+    except KeyboardInterrupt:
+        path = agent.save("latest.pt")
+        print(f"Training interrupted. Saved checkpoint: {path}")
     finally:
         env.close()
 
     return run_dir
-
